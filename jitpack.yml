@@ -1,0 +1,6 @@
+jdk:
+  - openjdk8
+before_install:
+  - ./mvnw -N wrapper:wrapper -Dmaven=3.9.10
+install:
+  - ./mvnw clean install -DskipTests
