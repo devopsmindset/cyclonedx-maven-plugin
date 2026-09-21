@@ -21,7 +21,7 @@ Maven Usage
 <!-- uses default configuration -->
 <plugins>
     <plugin>
-        <groupId>org.cyclonedx</groupId>
+        <groupId>com.github.devopsmindset</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
         <executions>
             <execution>
@@ -41,7 +41,7 @@ Default Values
 ```xml
 <plugins>
     <plugin>
-        <groupId>org.cyclonedx</groupId>
+        <groupId>com.github.devopsmindset</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
         <configuration>
             <projectType>library</projectType>

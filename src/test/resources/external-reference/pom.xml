@@ -76,7 +76,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.cyclonedx</groupId>
+                <groupId>com.github.devopsmindset</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <version>${cyclonedx-maven-plugin.version}</version>
                 <executions>

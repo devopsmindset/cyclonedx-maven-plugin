@@ -33,7 +33,7 @@ You can add more external references the component that the BOM describes by plu
 
 ```
 <plugin>
-  <groupId>org.cyclonedx</groupId>
+  <groupId>com.github.devopsmindset</groupId>
   <artifactId>cyclonedx-maven-plugin</artifactId>
   <configuration>
     <externalReferences>

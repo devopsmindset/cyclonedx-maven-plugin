@@ -62,7 +62,10 @@ import java.util.Set;
 import java.util.UUID;
 
 public abstract class BaseCycloneDxMojo extends AbstractMojo {
-    static final String CYCLONEDX_PLUGIN_KEY = "org.cyclonedx:cyclonedx-maven-plugin";
+    // Must match this project's own coordinates: it is how the mojo finds its <configuration>
+    // in the consuming pom. This fork publishes under com.github.devopsmindset (JitPack), not
+    // org.cyclonedx, so the key follows the groupId.
+    static final String CYCLONEDX_PLUGIN_KEY = "com.github.devopsmindset:cyclonedx-maven-plugin";
     static final String PROJECT_TYPE = "projectType";
 
     @Parameter(property = "project", readonly = true, required = true)

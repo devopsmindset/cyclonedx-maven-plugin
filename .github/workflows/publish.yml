@@ -82,7 +82,7 @@ jobs:
         run: |
           V='${{ steps.v.outputs.version }}'
           {
-            echo "## Published \`org.cyclonedx:cyclonedx-maven-plugin:$V\`"
+            echo "## Published \`com.github.devopsmindset:cyclonedx-maven-plugin:$V\`"
             echo
             echo "From \`${{ github.sha }}\` on \`${{ github.ref_name }}\`."
             echo
@@ -106,7 +106,7 @@ jobs:
             echo
             echo '```xml'
             echo '<plugin>'
-            echo '  <groupId>org.cyclonedx</groupId>'
+            echo '  <groupId>com.github.devopsmindset</groupId>'
             echo '  <artifactId>cyclonedx-maven-plugin</artifactId>'
             echo "  <version>$V</version>"
             echo '</plugin>'

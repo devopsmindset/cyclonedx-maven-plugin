@@ -87,7 +87,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.cyclonedx</groupId>
+                <groupId>com.github.devopsmindset</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <version>@project.version@</version>
                 <!-- intentionally use default configuration -->
