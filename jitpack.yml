@@ -1,4 +1,6 @@
 jdk:
   - openjdk8
+before_install:
+  - mvn -B -N org.apache.maven.plugins:maven-wrapper-plugin:3.2.0:wrapper -Dmaven=3.6.3
 install:
-  - mvn clean install -Dinvoker.skip=true
+  - ./mvnw -B clean install -Dinvoker.skip=true
