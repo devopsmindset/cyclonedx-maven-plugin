@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -62,6 +63,16 @@ import java.util.Set;
 import java.util.UUID;
 
 public abstract class BaseCycloneDxMojo extends AbstractMojo {
+    /**
+     * Property of the CycloneDX Maven taxonomy: whether the package is used only within the {@code test} scope.
+     */
+    static final String TEST_PROPERTY = "cdx:maven:package:test";
+
+    /**
+     * Package URLs of the components marked as used only within the test scope, across the reactor projects.
+     */
+    private final Set<String> testOnlyComponents = new HashSet<>();
+
     // Must match this project's own coordinates: it is how the mojo finds its <configuration>
     // in the consuming pom. This fork publishes under com.github.devopsmindset (JitPack), not
     // org.cyclonedx, so the key follows the groupId.
@@ -526,13 +537,52 @@ public abstract class BaseCycloneDxMojo extends AbstractMojo {
             final String purl = entry.getKey();
             final Artifact artifact = entry.getValue();
             final Component.Scope artifactScope = getComponentScope(artifact, dependencyAnalysis);
+            // Only when the test scope is included, so a BOM without it keeps its components unmarked
+            final boolean testArtifact = includeTestScope && Artifact.SCOPE_TEST.equals(artifact.getScope());
             final Component component = components.get(purl);
             if (component == null) {
                 final Component newComponent = convertMavenDependency(artifact);
-                newComponent.setScope(artifactScope);
+                if (testArtifact) {
+                    markTestOnly(purl, newComponent);
+                } else {
+                    newComponent.setScope(artifactScope);
+                }
                 components.put(purl, newComponent);
             } else if (!topLevelComponents.contains(purl)) {
-                component.setScope(mergeScopes(component.getScope(), artifactScope));
+                if (!testOnlyComponents.contains(purl)) {
+                    if (!testArtifact) {
+                        component.setScope(mergeScopes(component.getScope(), artifactScope));
+                    }
+                } else if (!testArtifact) {
+                    // used outside the test scope by this project: no longer test only
+                    unmarkTestOnly(purl, component);
+                    component.setScope(artifactScope);
+                }
+            }
+        }
+    }
+
+    /**
+     * Marks a component used only within the Maven {@code test} scope, as the CycloneDX property taxonomy and
+     * specification define it: the {@value #TEST_PROPERTY} property set to {@code true} and the {@code excluded}
+     * scope ("component usage for test and other non-runtime purposes"). Properties exist since schema 1.3.
+     *
+     * @see <a href="https://github.com/CycloneDX/cyclonedx-property-taxonomy/blob/main/cdx/maven.md">cdx:maven taxonomy</a>
+     */
+    private void markTestOnly(final String purl, final Component component) {
+        testOnlyComponents.add(purl);
+        component.setScope(Component.Scope.EXCLUDED);
+        if (schemaVersion().getVersion() >= 1.3) {
+            component.addProperty(newProperty(TEST_PROPERTY, "true"));
+        }
+    }
+
+    private void unmarkTestOnly(final String purl, final Component component) {
+        testOnlyComponents.remove(purl);
+        if (component.getProperties() != null) {
+            component.getProperties().removeIf(property -> TEST_PROPERTY.equals(property.getName()));
+            if (component.getProperties().isEmpty()) {
+                component.setProperties(null);
             }
         }
     }

@@ -67,6 +67,11 @@ Default Values
 
 See also [External References](https://cyclonedx.github.io/cyclonedx-maven-plugin/external-references.html) documentation for details on this topic.
 
+With `<includeTestScope>true</includeTestScope>`, a component used only within the `test` scope (a test dependency and
+its transitive dependencies, unless another dependency of the build needs them in another scope) gets the `excluded`
+scope and the [`cdx:maven:package:test`](https://github.com/CycloneDX/cyclonedx-property-taxonomy/blob/main/cdx/maven.md)
+property set to `true`, so that consumers of the BOM can tell it apart from what ships.
+
 Excluding Projects
 -------------------
 With `makeAggregateBom` goal, it is possible to exclude certain Maven reactor projects (aka modules) from getting included in the aggregate BOM:
